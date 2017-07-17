@@ -161,10 +161,15 @@ spec:
   selector:
     k8s-app: kube-dns
   clusterIP: {{ cluster.dns_service_ip }}
+  type: NodePort
   ports:
   - name: dns
     port: 53
+    targetPort: 53
+    nodePort:30053
     protocol: UDP
   - name: dns-tcp
     port: 53
+    targetPort: 53
+    nodePort:30053
     protocol: TCP
