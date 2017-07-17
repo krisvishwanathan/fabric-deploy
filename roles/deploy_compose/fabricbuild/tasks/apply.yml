@@ -91,5 +91,5 @@
   
 - name: Create the project version file
   template:
-    src: "{{ playbook_dir }}/fabricbuild/templates/VERSION.j2"
+    src: "{{ playbook_dir }}/../deploy_compose/fabricbuild/templates/VERSION.j2"
     dest: "{{ fabricworkdir }}/images/VERSION"

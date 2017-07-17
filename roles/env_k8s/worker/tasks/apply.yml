@@ -12,6 +12,7 @@
     state: directory
     mode: 0775
   with_items:
+    - "{{ fabricroot }}"
     - "{{ fabricroot }}/bin"
     - "/etc/kubernetes"
     - "~/.kube"

@@ -9,7 +9,6 @@
     fabricworkdir: "/opt/gopath/{{ env }}/fabric"
     gopath: "/opt/gopath/{{ env }}"
     arch: "{{ rawarch.stdout}}"
-    cas: "{{ [] }}"
     peers: "{{ [] }}"
     orderers: "{{ [] }}"
     kafkas: "{{ [] }}"
@@ -27,6 +26,14 @@
     allpeers: "{{ [] }}"
     clihost: ""
     thetag: "{{ rawarch.stdout + '-' + fabric.baseimage_tag }}"
+    filterstr: ""
+    k8s_server: "{{ hostvars[groups['allnodes'][0]].private_ip }}"
+
+- name: Shut down fabric pods
+  command: "/opt/fabric/bin/kubectl --server {{ k8s_server }}:8080 delete -f {{ fabricworkdir }}/run/fabric-pod.yml"
+  args:
+    removes: "{{ fabricworkdir }}/run/fabric-pod.yml"
+  tags: "fabricdown"
 
 - name: Make sure that working directory exists and clean
   file:
@@ -68,18 +75,11 @@
     index: "{{ index | int + 1 }}"
   with_items: "{{ kafkals | default([]) }}"
 
-- name: Get ca container list
-  set_fact:
-    cas: |
-      {{ cas + [{'org':item.split('.')[-1],
-        'name':item.split('.')[:-1] | join('.') }] }}
-  with_items: "{{ fabric.network[current_host].cas | default([]) }}"
-
 - name: Get all peer object list
   set_fact:
     allpeers: |
       {{ allpeers | default([]) + [{'org':item.split('@')[1].split('.')[-1],
-        'name':item.split('@')[1].split('.')[:-1] | join('.'),
+        'name':item.split('@')[1] | replace('.', '-'),
         'role':item.split('@')[0]}] }}
   with_items: "{{ peerls }}"
 
@@ -87,14 +87,14 @@
   set_fact:
     allorderers: |
       {{ allorderers | default([]) + [{ 'org':item.split('.')[-1],
-        'name':item.split('.')[:-1] | join('.') }] }}
+        'name':item | replace('.', '-') }] }}
   with_items: "{{ ordererls }}"
 
 - name: Get peer container list
   set_fact:
     peers: |
       {{ peers + [{'org':item.split('@')[1].split('.')[-1],
-        'name':item.split('@')[1].split('.')[:-1] | join('.'),
+        'name':item.split('@')[1] | replace('.', '-'),
         'role':item.split('@')[0]}] }}
   with_items: "{{ fabric.network[current_host].peers | default([]) }}"      
 
@@ -102,7 +102,7 @@
   set_fact:
     orderers: |
       {{ orderers + [{'org':item.split('.')[-1],
-        'name':item.split('.')[:-1] | join('.') }] }}
+        'name':item | replace('.', '-') }] }}
   with_items: "{{ fabric.network[current_host].orderers | default([]) }}"      
 
 - name: Set zookeeper and kafka container list
@@ -164,3 +164,65 @@
   template:
     src: "{{ playbook_dir }}/../deploy_k8s/fabricsetup/templates/fabric-pod.j2"
     dest: "{{ fabricworkdir }}/run/fabric-pod.yml"
+
+- name: Get pod filter string from peers and orderes
+  set_fact:
+    filterstr : "{{ filterstr + ' -e ' + item.name }}"
+  with_items:
+    - "{{ peers }}"
+    - "{{ orderers }}"
+
+- name: Get pod filter string from zookeepers and kafkas
+  set_fact:
+    filterstr : "{{ filterstr + ' -e ' + item }}"
+  with_items:
+    - "{{ zookeepers }}"
+    - "{{ kafkas }}"
+
+- name: Wait for k8s environment to be clean
+  shell: >-
+    /opt/fabric/bin/kubectl --server {{ k8s_server }}:8080 get pods |
+    grep {{ filterstr }} | cat
+  register: result
+  until: result.stdout == ""
+  retries: 10
+  delay: 2
+
+- name: Start fabric pods
+  command: "/opt/fabric/bin/kubectl --server {{ k8s_server }}:8080 create -f {{ fabricworkdir }}/run/fabric-pod.yml"
+  tags: "fabricup"
+  
+- name: Locate a host to run peer channel create command
+  set_fact:
+    clihost: "{{ item }}"
+    clipeer: "{{ allpeers | random }}"
+    cliorderer: "{{ allorderers | random }}"
+  when: peers | length > 0 and clihost == ""
+  with_items: "{{ groups['allnodes'] }}"
+
+- name: Make sure that working directory exists and clean
+  file:
+    path: "{{ fabricworkdir }}/run/keyfiles/chaincode"
+    state: "directory"
+    mode: 0775
+  when: clihost == inventory_hostname
+
+- name: Move chaincode to the server
+  copy:
+    src: "{{ playbook_dir }}/../deploy_k8s/fabricsetup/templates/firstcode.go"
+    dest: "{{ fabricworkdir }}/run/keyfiles/chaincode/firstcode.go"
+    mode: "u=rw,g=rw"
+  when: clihost == inventory_hostname
+
+- name: Create peer channel command script
+  template:
+    src: "{{ playbook_dir }}/../deploy_k8s/fabricsetup/templates/dochannel.j2"
+    dest: "{{ fabricworkdir }}/run/keyfiles/dochannel.sh"
+    mode: "u=rx,g=rx"
+  when: clihost == inventory_hostname
+
+- name: Create peer channel command k8s deployment file
+  template:
+    src: "{{ playbook_dir }}/../deploy_k8s/fabricsetup/templates/cli-k8s.j2"
+    dest: "{{ fabricworkdir }}/run/cli-k8s.yml"
+  when: clihost == inventory_hostname

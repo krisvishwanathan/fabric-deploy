@@ -9,7 +9,7 @@ Organizations:
     AdminPrincipal: Role.ADMIN
     {% if org_anchor[org] is defined -%}
     AnchorPeers:
-      - Host: {{ org_anchor[org].name }}.{{ org }}
+      - Host: {{ org_anchor[org].name }}
         Port: 7051
     {% endif %}
 
@@ -20,7 +20,7 @@ Orderer: &OrdererDefaults
   OrdererType: kafka
   Addresses:
 {%   for orderer in orderers %}
-    - {{ orderer.name }}.{{ orderer.org }}:7050
+    - {{ orderer.name }}:7050
 {%   endfor %}  
   BatchTimeout: 2s
   BatchSize:

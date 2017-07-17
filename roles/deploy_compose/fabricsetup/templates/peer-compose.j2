@@ -4,11 +4,11 @@ version: '2'
 services:
 
 {% for peer in peers %}
-  {{ peer.name }}.{{ peer.org }}:
-    container_name: {{ peer.name }}.{{ peer.org }}
+  {{ peer.name }}:
+    container_name: {{ peer.name }}
     image: hyperledger/fabric-peer:{{ thetag }}
     network_mode: bridge
-    hostname: {{ peer.name }}.{{ peer.org }}
+    hostname: {{ peer.name }}
     environment:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_LOGGING_LEVEL=DEBUG
@@ -20,9 +20,9 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      - CORE_PEER_ID={{ peer.name }}.{{ peer.org }}
-      - CORE_PEER_ADDRESS={{ peer.name }}.{{ peer.org }}:7051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT={{ peer.name }}.{{ peer.org }}:7051
+      - CORE_PEER_ID={{ peer.name }}
+      - CORE_PEER_ADDRESS={{ peer.name }}:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT={{ peer.name }}:7051
       - CORE_PEER_LOCALMSPID={{ peer.org }}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
     volumes:

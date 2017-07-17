@@ -3,7 +3,7 @@
 GIT_URL: "http://gerrit.hyperledger.org/r/fabric"
 
 # The gerrit patch set reference, should be automatically set by gerrit
-GERRIT_REFSPEC: "refs/tags/v1.0.0-rc1"
+GERRIT_REFSPEC: "refs/changes/23/11523/3"
 
 # This variable defines fabric network attributes
 fabric: {
@@ -16,31 +16,31 @@ fabric: {
   # peers indicates peer containers
   # orderers indicates orderer containers
   # kafka indicates kafka containers
-  # all names must be in lower case due to a skydns bug. This limitation will be
-  # lifted when we have an improved dns server.
+  # all names must be in lower case. Numeric characters cannot be used to start
+  # or end a name. Character dot (.) can only be used in names of peers and orderers.
   network: {
     fabric001: {
-      cas: ["ca.orga", "ca.orgb"],
-      peers: ["anchor@1stpeer.orga", "anchor@1stpeer.orgb"],
-      orderers: ["1storderer.orgc", "1storderer.orgd"],
+      cas: [],
+      peers: ["anchor@peer1st.orga", "anchor@peer1st.orgb"],
+      orderers: ["orderer1st.orgc", "orderer1st.orgd"],
       zookeepers: ["zookeeper1st"],
       kafkas: ["kafka1st"]
     },
     fabric002: {
-      cas: ["ca.orgc", "ca.orgd"],
-      peers: ["worker@2ndpeer.orga", "worker@2ndpeer.orgb"],
-      orderers: ["2ndorderer.orgc", "2ndorderer.orgd"],
+      cas: [],
+      peers: ["worker@peer2nd.orga", "worker@peer2nd.orgb"],
+      orderers: ["orderer2nd.orgc", "orderer2nd.orgd"],
       zookeepers: ["zookeeper2nd"],
       kafkas: ["kafka2nd"]    
     },
     fabric003: {
       cas: [],
-      peers: ["worker@3rdpeer.orga", "worker@3rdpeer.orgb"],
+      peers: ["worker@peer3rd.orga", "worker@peer3rd.orgb"],
       orderers: [],
       zookeepers: ["zookeeper3rd"],
       kafkas: ["kafka3rd"]    
     }
   },
 
-  baseimage_tag: "1.0.0-rc1"
+  baseimage_tag: "1.0.0"
 }

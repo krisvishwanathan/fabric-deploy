@@ -4,11 +4,11 @@ version: '2'
 services:
 
 {% for orderer in orderers %}
-  {{ orderer.name }}.{{ orderer.org }}:
-    container_name: {{ orderer.name }}.{{ orderer.org }}
+  {{ orderer.name }}:
+    container_name: {{ orderer.name }}
     image: hyperledger/fabric-orderer:{{ thetag }}
     network_mode: bridge
-    hostname: {{ orderer.name }}.{{ orderer.org }}
+    hostname: {{ orderer.name }}
     environment:
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
