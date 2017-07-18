@@ -1,8 +1,11 @@
 ---
 - name: Check if the VirtualBox VM already exists 
   shell: >-
-    /usr/local/bin/VBoxManage list vms | grep {{ cluster.image_name }} | cat
+    /usr/local/bin/VBoxManage list vms | grep {{ inventory_hostname }} | cat
   register: exists
+
+- debug:
+    var: exists
 
 - name: Create a VirtualBox VM
   command: >-
@@ -20,7 +23,7 @@
 
 - name: Check if the VirtualBox VM is already running
   shell: >-
-    /usr/local/bin/VBoxManage list runningvms | grep {{ cluster.image_name }} | cat
+    /usr/local/bin/VBoxManage list runningvms | grep {{ inventory_hostname }} | cat
   register: running
   
 - name: Start up the VM
