@@ -1,11 +1,22 @@
 ---
+- name: Create a VirtualBox VM
+  shell: >-
+    /usr/local/bin/VBoxManage list runningvms | grep {{ inventory_hostname }} | cat
+  register: running
+  
 - name: Power off the VM
   command: >-
     /usr/local/bin/VBoxManage controlvm {{ inventory_hostname }} poweroff
+  when: running.stdout == ""
   tags: "stopVM"
+
+- name: Create a VirtualBox VM
+  shell: >-
+    /usr/local/bin/VBoxManage list vms | grep {{ inventory_hostname }} | cat
+  register: exists
 
 - name: Remove a VirtualBox VM
   command: >-
-    /usr/local/bin/VBoxManage unregistervm {{ inventory_hostname }} --delete 
+    /usr/local/bin/VBoxManage unregistervm {{ inventory_hostname }} --delete
+  when: exists.stdout == ""
   tags: "removeVM"
-
