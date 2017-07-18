@@ -1,0 +1,11 @@
+---
+- name: Power off the VM
+  command: >-
+    /usr/local/bin/VBoxManage controlvm {{ inventory_hostname }} poweroff
+  tags: "stopVM"
+
+- name: Remove a VirtualBox VM
+  command: >-
+    /usr/local/bin/VBoxManage unregistervm {{ inventory_hostname }} --delete 
+  tags: "removeVM"
+
