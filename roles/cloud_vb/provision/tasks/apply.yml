@@ -1,11 +1,8 @@
 ---
-- name: Check if the VirtualBox VM already exists 
+- name: Check if the VirtualBox VM already exists
   shell: >-
     /usr/local/bin/VBoxManage list vms | grep {{ inventory_hostname }} | cat
   register: exists
-
-- debug:
-    var: exists
 
 - name: Create a VirtualBox VM
   command: >-
