@@ -52,4 +52,5 @@ peer chaincode instantiate -o {{ cliorderer.name }}:7050 --tls true \
 # Query the chaincode
 echo '-------------- Query chaincode'
 
-peer chaincode query -C firstchannel -n firstchaincode -c '{"Args":["query","a"]}'
+# chain code instantiation takes long time, do query after awhile manually
+# peer chaincode query -C firstchannel -n firstchaincode -c '{"Args":["query","a"]}'
