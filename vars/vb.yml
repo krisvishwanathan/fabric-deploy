@@ -46,9 +46,9 @@ cluster: {
 
   # stack_size determines how many virtual or physical machines we will have
   # each machine will be named ${name_prefix}001 to ${name_prefix}${stack_size} 
-  stack_size: 3,
+  stack_size: 2,
 
-  etcdnodes: ["fabric001", "fabric002", "fabric003"],
+  etcdnodes: ["fabric001"],
   builders: ["fabric001"],
   
   flannel_repo: "https://github.com/coreos/flannel/releases/download/v0.7.1/flannel-v0.7.1-linux-amd64.tar.gz",

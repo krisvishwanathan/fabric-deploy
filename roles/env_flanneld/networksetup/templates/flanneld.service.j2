@@ -6,7 +6,7 @@ Environment="FLANNELD_IFACE={{ node_ip }}"
 Environment="FLANNELD_ETCD_ENDPOINTS={{ etcd_cluster }}"
 Environment="FLANNELD_ETCD_PREFIX=/coreos.com/network/"
 Environment="FLANNELD_IP_MASQ=false"
-ExecStart={{ fabricroot }}/bin/flanneld
+ExecStart={{ fabricpath }}/bin/flanneld
 Restart=always
 RestartSec=2s
 StartLimitInterval=0

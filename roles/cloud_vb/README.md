@@ -10,8 +10,8 @@ already installed. The configuration file is in vars/vb.yml. You should create y
 own configuration file by copy and change that file according to your own environment.
 
 To use this role to provision VirtualBxo vms once you create a configuration file like
-vars/vb.yml, and named it myvb.yml, you can run the following command in the root directory of the project,
-not in the directory where this file is located::
+vars/vb.yml, and named it myvb.yml, you can run the following command in the root
+directory of the project, not in the directory where this file is located::
 
     ansible-playbook -e "mode=apply env=myvb cloud_type=vb password=xxxxx" procluster.yml
     
@@ -22,3 +22,15 @@ To remove all these VMs, you can run the following command which will stop all t
 vms and completely remove these vms from your VirtualBox environment::
 
     ansible-playbook -e "mode=destroy env=myvb cloud_type=vb password=xxxxx" procluster.yml
+
+Few words about the base image::
+The base image should have the ssh user be a sudoer, for example if your ssh user
+is called ubuntu, do the following::
+
+    echo "ubuntu ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/ununtu
+    
+You may also want to disable the daily update which by default is enabled. When
+you start a VB instance using the base image, if it starts auto update, your ansible
+script will not be able to install any onto the instance. When you build your
+base image, it will be nice to do apt update, then disable the daily updates. Also
+make sure that the image can be ssh log in using username and password.
