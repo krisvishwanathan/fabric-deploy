@@ -63,6 +63,7 @@
       --advertise-address={{ public_ip }}
       --bind-address={{ private_ip }}
       --insecure-bind-address={{ private_ip }}
+      --allow-privileged=true
     controller_params: >-
       --master=http://{{ private_ip }}:8080
       --cluster-cidr={{ cluster.container_network.Network }}

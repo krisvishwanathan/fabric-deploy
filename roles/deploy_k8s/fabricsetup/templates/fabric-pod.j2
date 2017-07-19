@@ -115,6 +115,8 @@ spec:
     - name: {{ peer.name }}
       image: hyperledger/fabric-peer:{{ thetag }}
       imagePullPolicy: IfNotPresent
+      securityContext:
+        privileged: true
       env:
         - name: CORE_VM_ENDPOINT
           value: "unix:///host/var/run/docker.sock"

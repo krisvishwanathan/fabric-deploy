@@ -56,7 +56,8 @@
       --container-runtime=docker
       --cluster-dns={{ cluster.dns_service_ip }}
       --cluster-domain={{ cluster.domain }}
-      --resolv-conf=''      
+      --allow-privileged=true
+      --resolv-conf=''
     proxy_params: >-
       --master={{ private_ip }}:8080
       --cluster-cidr={{ cluster.container_network.Network }}

@@ -22,6 +22,8 @@ spec:
     - name: fabriccli
       image: hyperledger/fabric-tools:{{ thetag }}
       imagePullPolicy: IfNotPresent
+      securityContext:
+        privileged: true
       env:
         - name: CORE_VM_ENDPOINT
           value: "unix:///host/var/run/docker.sock"
