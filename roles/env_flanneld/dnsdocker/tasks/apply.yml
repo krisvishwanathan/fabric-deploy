@@ -3,7 +3,7 @@
   set_fact:
     etcd_cluster: ""
     node_ip: "{{ hostvars[groups['allnodes'][0]].private_ip }}"
-    domain: "{{ (env_type=='flanneld') | ternary(cluster.domain, 'default.svc.'+cluster.domain) }}"
+    domain: "{{ (env_type|default('flanneld')=='flanneld') | ternary(cluster.domain, 'default.svc.'+cluster.domain) }}"
 
 - name: Wait for the flannel to setup the subnets
   wait_for:
