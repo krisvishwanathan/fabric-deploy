@@ -9,10 +9,11 @@ Type=notify
 Environment="DOCKER_OPT_BIP=--bip={{ bip.stdout }}"
 Environment="DOCKER_OPT_MTU=--mtu={{ mtu.stdout }}"
 Environment="DOCKER_OPT_DNS=--dns={{ node_ip }}"
+Environment="DOCKER_OPT_DNS_SEARCH=--dns-search={{ domain }}"
 
 ExecStart=/usr/bin/dockerd -H fd:// \
   $DOCKER_OPTS $DOCKER_OPT_BIP $DOCKER_OPT_MTU \
-  $DOCKER_OPT_IPMASQ $DOCKER_OPT_DNS
+  $DOCKER_OPT_DNS $DOCKER_OPT_DNS_SEARCH
 
 ExecReload=/bin/kill -s HUP $MAINPID
 

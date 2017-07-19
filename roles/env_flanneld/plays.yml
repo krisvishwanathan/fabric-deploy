@@ -34,7 +34,18 @@
     - include: "networksetup/tasks/{{ mode }}.yml"
   tags: "networksetup"
 
-- name: setup dns services
+- name: setup dns attribute for docker service
+  hosts: allnodes
+  user: "{{ cluster.ssh_user }}"
+  become: true
+  become_user: root
+  vars_files:
+    - "./../../vars/{{ env }}.yml"
+  tasks:
+    - include: "dnsdocker/tasks/{{ mode }}.yml"
+  tags: "dnsdocker"
+
+- name: setup dns services and registrator
   hosts: allnodes
   user: "{{ cluster.ssh_user }}"
   become: true

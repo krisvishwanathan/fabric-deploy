@@ -34,6 +34,17 @@
     - include: "../env_flanneld/networksetup/tasks/{{ mode }}.yml"
   tags: "networksetup"
 
+- name: setup dns attribute for docker service
+  hosts: allnodes
+  user: "{{ cluster.ssh_user }}"
+  become: true
+  become_user: root
+  vars_files:
+    - "./../../vars/{{ env }}.yml"
+  tasks:
+    - include: "../env_flanneld/dnsdocker/tasks/{{ mode }}.yml"
+  tags: "dnsdocker"
+
 - name: setup k8s master node
   hosts: allnodes[0]
   user: "{{ cluster.ssh_user }}"

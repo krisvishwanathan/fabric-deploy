@@ -35,33 +35,6 @@
   set_fact:
     etcd_cluster: "{{ etcd_cluster | trim | replace(' ', ',') }}"
 
-- name: Get the bip address
-  shell: >-
-    . /run/flannel/subnet.env && echo $FLANNEL_SUBNET
-  register: bip
-
-- name: Get the mtu
-  shell: >-
-    . /run/flannel/subnet.env && echo $FLANNEL_MTU
-  register: mtu
-
-- name: Adding dns entry to the docker service
-  template:
-    src: "{{ playbook_dir }}/../env_flanneld/dnssetup/templates/docker.j2"
-    dest: "/lib/systemd/system/docker.service"
-
-- name: Reload daemon service
-  command: systemctl daemon-reload
-
-- name: Restart the docker services
-  service:
-    name: "{{ item }}"
-    enabled: yes
-    state: restarted
-  with_items:
-    - docker.socket
-    - docker
-
 - name: Check if there are existing skydns containers
   command: docker ps -a -f name=skydns.{{ node_name }}
   register: hasContainer
@@ -74,15 +47,17 @@
   shell: cat '/etc/resolv.conf'|grep nameserver|awk '{print $2 ":53"}'
   register: nameservers
 
+# only have skydns container running on the first node
 - name: Start skydns service
-  command: >
+  command: >-
     docker run -d --name skydns.{{ node_name }} --net=host -p 53:53/udp
     skynetservices/skydns:2.5.3a -machines {{ etcd_cluster }}
     -nameservers {{ nameservers.stdout_lines | join(',') }}
     -addr {{ node_ip }}:53 -local {{ node_name }}.{{ domain }}
+  when: node_ip == hostvars[groups['allnodes'][0]].private_ip
 
 - name: Start registrator service
-  command: >
+  command: >-
     docker run -d --name registrator.{{ node_name }}
     -v /var/run/docker.sock:/tmp/docker.sock
     email4tong/registrator:v10 -internal -ttl 30 -ttl-refresh 20
