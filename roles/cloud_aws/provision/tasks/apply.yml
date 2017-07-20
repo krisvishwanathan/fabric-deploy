@@ -34,21 +34,18 @@
     wait: true
   register: awsvm
 
-- debug:
-    var: awsvm
-
 - name: Setup variables for generate host groups
   set_fact:
-    inter_name: "{{ awsvm.instances[0].tags['Name'] }}"
-    public_ip: "{{ awsvm.instances[0]['public_ip'] }}"
-    private_ip: "{{ awsvm.instances[0]['private_ip'] }}"
+    inter_name: "{{ awsvm.instances[0].tags.Name }}"
+    public_ip: "{{ awsvm.instances[0].public_ip }}"
+    private_ip: "{{ awsvm.instances[0].private_ip }}"
 
 - name: Use public ip address when private ip is empty
   set_fact:
-    private_ip: "{{ awsvm.instances[0]['public_ip'] }}"
-  when: awsvm.instances[0]['private_ip'] == ""
+    private_ip: "{{ awsvm.instances[0].public_ip }}"
+  when: awsvm.instances[0].private_ip == ""
 
 - name: Use private ip address when public ip is empty
   set_fact:
-    public_ip: "{{ awsvm.results[item.0]['instances'][0]['private_ip'] }}"
-  when: awsvm.instances[0]['public_ip'] == ""
+    public_ip: "awsvm.instances[0].private_ip }}"
+  when: awsvm.instances[0].public_ip == ""

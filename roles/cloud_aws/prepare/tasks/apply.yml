@@ -7,7 +7,6 @@
 - name: Retrieve AWS specific image flavor
   ec2_ami_find:
     region: "{{ cluster.region_name }}"
-    #owner: 099720109477 # this is a unique id to search for ubuntu provided images. keeping it here for future reference, as it was hard to find
     name: "{{ cluster.image_name }}"
     virtualization_type: hvm
     is_public: yes
@@ -38,9 +37,6 @@
     aws_access_key: "{{ aws_usr_key }}"
     aws_secret_key: "{{ aws_sec_key }}"
   register: vpcnet
-
-- debug:
-    var: vpcnet
 
 - name: Create EC2 security group
   ec2_group:
