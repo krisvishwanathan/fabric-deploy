@@ -8,6 +8,8 @@
   ec2_ami_find:
     region: "{{ cluster.region_name }}"
     name: "{{ cluster.image_name }}"
+    aws_access_key: "{{ aws_usr_key }}"
+    aws_secret_key: "{{ aws_sec_key }}"
     virtualization_type: hvm
     is_public: yes
     sort: name
