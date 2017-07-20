@@ -1,21 +1,26 @@
 ---
-#TODO - Instead, test to see if you can delete the VMs as a group based the group tag, 
-#since its asking for instance_ids whcih we will have to persist in the apply play
+- name: Setup env specific variables
+  set_fact:
+    aws_usr_key: "{{ auth.username }}"
+    aws_sec_key: "{{ auth.password }}"
+
+- name: Gather instances facts
+  ec2_remote_facts:
+    region: "{{ cluster.region_name }}"
+    aws_access_key: "{{ aws_usr_key }}"
+    aws_secret_key: "{{ aws_sec_key }}"
+    filters:
+      instance_state_name: running
+      "tag:Name": "{{ inventory_hostname }}"
+  register: vms
 
 - name: Destroy the AWS EC2 VM
   ec2:
     region: "{{ cluster.region_name }}"
-    aws_access_key: "{{ auth.username | default(lookup('env', 'AWS_ACCESS_KEY')) }}"
-    aws_secret_key: "{{ auth.password | default(lookup('env', 'AWS_SECRET_KEY')) }}"
-    key_name: "{{ cluster.ssh_key_name }}"
-    #zone: "{{ zone }}"
-    validate_certs: "{{ cluster.validate_certs }}"
-    group: "{{ cluster.security_group }}"
-    image: "{{ cluster.image_id }}"
-    instance_type: "{{ cluster.flavor_name }}"
+    aws_access_key: "{{ aws_usr_key }}"
+    aws_secret_key: "{{ aws_sec_key }}"
+    instance_id: "{{ vms.instances[0].id }}"
     state: absent
     wait_timeout: 200
-    instance_tags:
-      Name: "{{ inventory_hostname }}"
     wait: true
-  register: awsvm_state
+  when: vms.instances | length > 0

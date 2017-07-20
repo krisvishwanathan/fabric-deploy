@@ -7,9 +7,9 @@ https://atplanet.co/blog/ec2-auto-scaling-with-ansible.html
 Pre-reqs 
 ---------
 
-Must:
+To use ansible to work with AWS, python library like boto and boto3 must be installed:
 -----
-sudo pip install boto==2.47.0
+sudo pip install boto boto3
 
 Nice to have:
 -------------

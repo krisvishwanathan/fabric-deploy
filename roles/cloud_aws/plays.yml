@@ -36,5 +36,5 @@
   vars_files:
     - "{{ playbook_dir }}/../../vars/{{ env }}.yml"
   tasks:
-    - include: "namenode/tasks/{{ mode }}.yml"
+    - include: "../cloud_os/namenode/tasks/{{ mode }}.yml"
   tags: "namenode"
