@@ -34,3 +34,21 @@ you start a VB instance using the base image, if it starts auto update, your ans
 script will not be able to install any onto the instance. When you build your
 base image, it will be nice to do apt update, then disable the daily updates. Also
 make sure that the image can be ssh log in using username and password.
+
+Currently this provision only support VirtualBox running on linux like system. When
+you have VirtualBox running on Windows, the provision won't work. You will have to
+manually create the VMs and run/hosts file like the following::
+
+    cloud ansible_host=127.0.0.1 ansible_python_interpreter=python
+    192.168.56.34 private_ip=192.168.56.34 public_ip=192.168.56.34 inter_name=fabric001
+    192.168.56.36 private_ip=192.168.56.36 public_ip=192.168.56.36 inter_name=fabric002
+
+    [allnodes]
+    192.168.56.34
+    192.168.56.36
+
+    [etcdnodes]
+    192.168.56.34
+
+    [builders]
+    192.168.56.34

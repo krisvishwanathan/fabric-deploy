@@ -1,11 +1,12 @@
 ---
-# This is an example configuration file when use ubuntu image.
-horizon_url: "https://salesdemo-sjc.openstack.blueboxgrid.com"
-
 auth: {
+  # Define where the VirtualBox(VB) system is
   auth_url: "192.168.0.32",
+  # User name to log in to the remote VB system
   username: "tongli",
-  password: "{{ password }}"
+  # Password to the VB system, can specify at command line
+  # or use env variable named PASSWORD
+  password: "{{ password | default(lookup('env', 'PASSWORD')) }}"
 }
 
 # This variable defines cloud provision attributes

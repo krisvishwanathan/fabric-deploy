@@ -24,14 +24,14 @@ fabric: {
       peers: ["anchor@peer1st.orga", "anchor@peer1st.orgb"],
       orderers: ["orderer1st.orgc", "orderer1st.orgd"],
       zookeepers: ["zookeeper1st"],
-      kafkas: ["kafka1st", "kafka2nd"]
+      kafkas: ["kafka1st"]
     },
     fabric002: {
       cas: [],
       peers: ["worker@peer2nd.orga", "worker@peer2nd.orgb"],
       orderers: ["orderer2nd.orgc", "orderer2nd.orgd"],
-      zookeepers: ["zookeeper2nd", "zookeeper3rd"],
-      kafkas: ["kafka3rd"]    
+      zookeepers: [],
+      kafkas: []
     }
   },
 
