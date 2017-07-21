@@ -163,16 +163,6 @@
     - { name: "orderer-compose", flag: "{{ orderers }}" }
     - { name: "peer-compose", flag: "{{ peers }}" }
 
-- name: Shut down fabric component first
-  command: "docker-compose -p {{ env }}.{{ item.name }} -f {{ fabricworkdir }}/run/{{ item.name }}.yml down"
-  when: item.flag | length > 0
-  with_items:
-    - { name: "zookeeper-compose", flag: "{{ zookeepers }}" }
-    - { name: "kafka-compose", flag: "{{ kafkas }}" }
-    - { name: "orderer-compose", flag: "{{ orderers }}" }
-    - { name: "peer-compose", flag: "{{ peers }}" }
-  tags: "fabricdown"
-
 - name: Start fabric components
   command: "docker-compose -p {{ env }}.{{ item.name }} -f {{ fabricworkdir }}/run/{{ item.name }}.yml up -d"
   when: item.flag | length > 0
@@ -216,10 +206,6 @@
   template:
     src: "{{ playbook_dir }}/fabricsetup/templates/cli-compose.j2"
     dest: "{{ fabricworkdir }}/run/cli-compose.yml"
-  when: clihost == inventory_hostname
-
-- name: Clear fabriccli components
-  command: "docker-compose -p {{ env }}.cli -f {{ fabricworkdir }}/run/cli-compose.yml down"
   when: clihost == inventory_hostname
 
 - name: Start fabriccli components
