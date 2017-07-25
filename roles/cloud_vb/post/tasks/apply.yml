@@ -12,7 +12,7 @@
     name: "{{ hostvars[item].public_ip }}"
     private_ip: "{{ hostvars[item].private_ip }}"
     public_ip: "{{ hostvars[item].public_ip }}" 
-    inter_name: "{{ item }}"
+    inter_name: "{{ item[3:] }}"
     groups: "allnodes"
   with_items:
     - "{{ groups['nathosts'] }}"
@@ -31,7 +31,7 @@
     name: "{{ hostvars[item[0]].public_ip }}"
     private_ip: "{{ hostvars[item[0]].private_ip }}"
     public_ip: "{{ hostvars[item[0]].public_ip }}" 
-    inter_name: "{{ item[0] }}"
+    inter_name: "{{ item[0][3:] }}"
     groups: "{{ item[1].type}}"
   when: item[0][3:] in item[1].member
   with_nested:

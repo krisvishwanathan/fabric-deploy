@@ -43,7 +43,7 @@
   command: "gpasswd -a {{ cluster.ssh_user }} docker"
 
 - name: Grant user permission to the gopath
-  command: "usermod -a -G root {{ cluster.ssh_user }}"
+  command: "usermod -a -G docker {{ cluster.ssh_user }}"
 
 - name: Retrive golang binary and unpackage it
   unarchive:

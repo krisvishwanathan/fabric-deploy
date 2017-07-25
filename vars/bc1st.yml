@@ -30,15 +30,15 @@ fabric: {
       cas: [],
       peers: ["worker@peer2nd.orga", "worker@peer2nd.orgb"],
       orderers: ["orderer2nd.orgc", "orderer2nd.orgd"],
-      zookeepers: ["zookeeper2nd"],
-      kafkas: ["kafka2nd"]    
+      zookeepers: [],
+      kafkas: []    
     },
     fabric003: {
       cas: [],
       peers: ["worker@peer3rd.orga", "worker@peer3rd.orgb"],
       orderers: [],
-      zookeepers: ["zookeeper3rd"],
-      kafkas: ["kafka3rd"]    
+      zookeepers: [],
+      kafkas: []    
     }
   },
 
