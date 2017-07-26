@@ -172,6 +172,18 @@
   with_items:
     - "{{ zookeepers }}"
     - "{{ kafkas }}"
+    - "fabriccli"
+
+- name: Pull container images from the docker hub
+  command: "docker pull {{ item }}"
+  when: fabric.baseimage_tag | length > 0
+  with_items:
+    - "hyperledger/fabric-tools:{{ thetag }}"
+    - "hyperledger/fabric-ccenv:{{ thetag }}"
+    - "hyperledger/fabric-kafka:{{ thetag }}"
+    - "hyperledger/fabric-zookeeper:{{ thetag }}"
+    - "hyperledger/fabric-peer:{{ thetag }}"
+    - "hyperledger/fabric-orderer:{{ thetag }}"
 
 - name: Wait for k8s environment to be clean
   shell: >-
@@ -185,7 +197,7 @@
 - name: Start fabric pods
   command: "/opt/fabric/bin/kubectl --server {{ k8s_server }}:8080 create -f {{ fabricworkdir }}/run/fabric-pod.yml"
   tags: "fabricup"
-  
+
 - name: Locate a host to run peer channel create command
   set_fact:
     clihost: "{{ item }}"

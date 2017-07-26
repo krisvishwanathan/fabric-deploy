@@ -5,7 +5,7 @@ horizon_url: "https://salesdemo-sjc.openstack.blueboxgrid.com"
 auth: {
   auth_url: "https://salesdemo-sjc.openstack.blueboxgrid.com:5000/v2.0",
   username: "litong01",
-  password: "{{ password }}",
+  password: "{{ password | default(lookup('env', 'password')) }}",
   project_name: "Interop"
 }
 

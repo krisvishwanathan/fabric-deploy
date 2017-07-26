@@ -72,8 +72,3 @@
   with_items:
     - { src: "{{ cluster.public_key_file }}", target: "{{ gopath }}/id_rsa.pub" }
     - { src: "{{ cluster.private_key_file }}", target: "{{ gopath }}/id_rsa" }
-
-- name: Restart networking services
-  service:
-    name: networking
-    state: restarted

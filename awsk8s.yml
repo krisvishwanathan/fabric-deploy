@@ -8,21 +8,21 @@
 
 - name: Run the plays
   vars:
-    env: "vb"
-    cloud_type: "vb"
-  include: "roles/cloud_vb/plays.yml"
+    env: "aws"
+    cloud_type: "aws"
+  include: "roles/cloud_aws/plays.yml"
 
 - name: Run the plays
   vars:
-    env: "vb"
-    env_type: "flanneld"
-  include: "roles/env_flanneld/plays.yml"
+    env: "aws"
+    env_type: "k8s"
+  include: "roles/env_k8s/plays.yml"
 
 - name: Run the plays
   vars:
-    env: "vb1st"
-    deploy_type: "compose"
-  include: "roles/deploy_compose/plays.yml"
+    env: "bc1st"
+    deploy_type: "k8s"
+  include: "roles/deploy_k8s/plays.yml"
 
 - name: Inform the installer
   hosts: cloud

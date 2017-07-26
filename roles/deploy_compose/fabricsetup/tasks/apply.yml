@@ -152,6 +152,17 @@
   set_fact:  
     orgmembers: "{{ peers | map(attribute='org') | list  | unique | sort | join(\".member' '\") | trim | replace(' ', ',') }}"
 
+- name: Pull container images from the docker hub
+  command: "docker pull {{ item }}"
+  when: fabric.baseimage_tag | length > 0
+  with_items:
+    - "hyperledger/fabric-tools:{{ thetag }}"
+    - "hyperledger/fabric-ccenv:{{ thetag }}"
+    - "hyperledger/fabric-kafka:{{ thetag }}"
+    - "hyperledger/fabric-zookeeper:{{ thetag }}"
+    - "hyperledger/fabric-peer:{{ thetag }}"
+    - "hyperledger/fabric-orderer:{{ thetag }}"
+
 - name: Create docker compose files
   template:
     src: "{{ playbook_dir }}/fabricsetup/templates/{{ item.name }}.j2"

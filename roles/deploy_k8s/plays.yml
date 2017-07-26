@@ -23,6 +23,8 @@
   hosts: allnodes
   gather_facts: false
   user: "{{ fabric.ssh_user }}"
+  become: true
+  become_user: root
   vars_files:
     - "./../../vars/{{ env }}.yml"
   tasks:
