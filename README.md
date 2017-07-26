@@ -41,28 +41,27 @@ need to do should be identical.
 
 ### On VirtualBox::
 
-    1. make changes to vars/vb.yml according to your VirtualBox environment
-    2. export password="your password to vb env"
-    3. To deploy::
-        ansible-playbook -e "mode=apply" vb.yml
-    4. To destroy::
-        ansible-playbook -e "mode=destroy" vb.yml
+        1. make changes to vars/vb.yml according to your VirtualBox environment
+        2. export password="your password to vb env"
+        3. To stand up the fabric network::
+       	    ansible-playbook -e "mode=apply" vb.yml
+        4. To tear down the fabric network::
+            ansible-playbook -e "mode=destroy" vb.yml
 
 ### On OpenStack cloud::
 
-    1. make changes to vars/os.yml according to your OpenStack cloud
-    2. export password="your password to OpenStack cloud"
-    3. To deploy::
-        ansible-playbook -e "mode=apply" os.yml
-    4. To destroy::
-        ansible-playbook -e "mode=destroy" os.yml
-
+        1. make changes to vars/os.yml according to your OpenStack cloud
+        2. export password="your password of your OpenStack cloud account"
+        3. To stand up the fabric network::
+            ansible-playbook -e "mode=apply" os.yml
+        4. To tear down the fabric network::
+            ansible-playbook -e "mode=destroy" os.yml
 
 ### On AWS cloud::
 
-    1. make changes to vars/aws.yml according to your aws cloud
-    2. export AWS_SECRET_KEY="your password to aws cloud"
-    3. To deploy::
-        ansible-playbook -e "mode=apply" aws.yml
-    4. To destroy::
-        ansible-playbook -e "mode=destroy" aws.yml
+        1. make changes to vars/aws.yml according to your aws cloud
+        2. export AWS_SECRET_KEY="your secret key of your aws account"
+        3. To stand up the fabric network::
+            ansible-playbook -e "mode=apply" aws.yml
+        4. To tear down the fabric network::
+            ansible-playbook -e "mode=destroy" aws.yml
