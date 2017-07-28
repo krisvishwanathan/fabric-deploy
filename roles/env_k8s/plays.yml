@@ -77,3 +77,12 @@
   tasks:
     - include: "post/tasks/{{ mode }}.yml"
   tags: "dashboard"
+
+- name: Reset connections
+  hosts: allnodes
+  user: "{{ cluster.ssh_user }}"
+  vars_files:
+    - "./../../vars/{{ env }}.yml"
+  tasks:
+    - include: "../env_flanneld/resetconn/tasks/{{ mode }}.yml"
+  tags: "resetconn"

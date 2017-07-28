@@ -55,3 +55,12 @@
   tasks:
     - include: "dnssetup/tasks/{{ mode }}.yml"
   tags: "dnssetup"
+
+- name: Reset connections
+  hosts: allnodes
+  user: "{{ cluster.ssh_user }}"
+  vars_files:
+    - "./../../vars/{{ env }}.yml"
+  tasks:
+    - include: "resetconn/tasks/{{ mode }}.yml"
+  tags: "resetconn"

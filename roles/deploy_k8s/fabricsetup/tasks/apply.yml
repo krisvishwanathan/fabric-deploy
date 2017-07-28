@@ -161,14 +161,14 @@
 
 - name: Get pod filter string from peers and orderes
   set_fact:
-    filterstr : "{{ filterstr + ' -e ' + item.name }}"
+    filterstr : "{{ filterstr + ' -e k8s_' + item.name }}"
   with_items:
     - "{{ peers }}"
     - "{{ orderers }}"
 
 - name: Get pod filter string from zookeepers and kafkas
   set_fact:
-    filterstr : "{{ filterstr + ' -e ' + item }}"
+    filterstr : "{{ filterstr + ' -e k8s_' + item }}"
   with_items:
     - "{{ zookeepers }}"
     - "{{ kafkas }}"
@@ -184,15 +184,6 @@
     - "hyperledger/fabric-zookeeper:{{ thetag }}"
     - "hyperledger/fabric-peer:{{ thetag }}"
     - "hyperledger/fabric-orderer:{{ thetag }}"
-
-- name: Wait for k8s environment to be clean
-  shell: >-
-    /opt/fabric/bin/kubectl --server {{ k8s_server }}:8080 get pods |
-    grep {{ filterstr }} | cat
-  register: result
-  until: result.stdout == ""
-  retries: 10
-  delay: 2
 
 - name: Start fabric pods
   command: "/opt/fabric/bin/kubectl --server {{ k8s_server }}:8080 create -f {{ fabricworkdir }}/run/fabric-pod.yml"
@@ -232,6 +223,10 @@
     src: "{{ playbook_dir }}/../deploy_k8s/fabricsetup/templates/cli-k8s.j2"
     dest: "{{ fabricworkdir }}/run/cli-k8s.yml"
   when: clihost == inventory_hostname
+
+- name: Wait for containers to be ready
+  pause:
+    seconds: 30
 
 - name: Start fabriccli pod
   command: >-
