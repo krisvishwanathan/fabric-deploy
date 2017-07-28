@@ -220,20 +220,9 @@
     dest: "{{ fabricworkdir }}/run/cli-compose.yml"
   when: clihost == inventory_hostname
 
-- name: Get container filter string from peers and orderes
-  set_fact:
-    filterstr : "{{ filterstr + ' -e ' + item.name }}"
-  with_items:
-    - "{{ peers }}"
-    - "{{ orderers }}"
-
 - name: Wait for containers to be ready
-  shell: >-
-    docker ps | grep {{ filterstr }} | cat
-  register: result
-  until: result.stdout_lines | length == peers | length + orderers | length
-  retries: 10
-  delay: 2
+  pause:
+    seconds: 30
 
 - name: Start fabriccli components
   command: "docker-compose -p {{ env }}.cli -f {{ fabricworkdir }}/run/cli-compose.yml up -d"
