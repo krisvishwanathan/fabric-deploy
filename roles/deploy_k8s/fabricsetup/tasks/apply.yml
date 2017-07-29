@@ -184,6 +184,7 @@
     - "hyperledger/fabric-zookeeper:{{ thetag }}"
     - "hyperledger/fabric-peer:{{ thetag }}"
     - "hyperledger/fabric-orderer:{{ thetag }}"
+    - "hyperledger/fabric-couchdb:{{ thetag }}"
 
 - name: Start fabric pods
   command: "/opt/fabric/bin/kubectl --server {{ k8s_server }}:8080 create -f {{ fabricworkdir }}/run/fabric-pod.yml"

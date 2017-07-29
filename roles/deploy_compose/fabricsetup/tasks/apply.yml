@@ -163,6 +163,7 @@
     - "hyperledger/fabric-zookeeper:{{ thetag }}"
     - "hyperledger/fabric-peer:{{ thetag }}"
     - "hyperledger/fabric-orderer:{{ thetag }}"
+    - "hyperledger/fabric-couchdb:{{ thetag }}"
 
 - name: Create docker compose files
   template:

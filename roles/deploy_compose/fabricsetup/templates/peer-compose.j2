@@ -4,6 +4,14 @@ version: '2'
 services:
 
 {% for peer in peers %}
+{% if fabric.peer_db == 'CouchDB' %}
+  couchdb-{{ peer.name }}:
+    container_name: couchdb-{{ peer.name }}
+    image: hyperledger/fabric-couchdb:{{ thetag }}
+    network_mode: bridge
+    hostname: couchdb-{{ peer.name }}
+{% endif %}
+
   {{ peer.name }}:
     container_name: {{ peer.name }}
     image: hyperledger/fabric-peer:{{ thetag }}
@@ -25,6 +33,10 @@ services:
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT={{ peer.name }}:7051
       - CORE_PEER_LOCALMSPID={{ peer.org }}
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+{% if fabric.peer_db == 'CouchDB' %}
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb-{{ peer.name }}:5984
+{% endif %}
     volumes:
       - /var/run/:/host/var/run/
       - {{ fabricworkdir }}/run/keyfiles/{{ peer.org }}/peers/{{ peer.name }}.{{ peer.org }}:/etc/hyperledger/fabric

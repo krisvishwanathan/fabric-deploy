@@ -11,6 +11,9 @@ fabric: {
   # The user to connect to the server
   ssh_user: "ubuntu",
 
+  # options are "goleveldb", "CouchDB", default is goleveldb
+  peer_db: "CouchDB",
+
   # The following section defines how the fabric network is going to be made up
   # cas indicates certificate authority containers
   # peers indicates peer containers

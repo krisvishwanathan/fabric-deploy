@@ -35,12 +35,9 @@ spec:
   selector:
     k8s-app: {{ zookeeper }}
   ports:
-    - name: port1
-      port: 2888
-    - name: port2
-      port: 3888
-    - name: port3
-      port: 2181
+    - { name: "port1", port: 2888 }
+    - { name: "port2", port: 3888 }
+    - { name: "port3", port: 2181 }
 {% endfor %}
 
 {% for kafka in kafkas %}
@@ -78,10 +75,8 @@ spec:
   selector:
     k8s-app: {{ kafka }}
   ports:
-    - name: port1
-      port: 9092
-    - name: port2
-      port: 9093
+    - { name: "port1", port: 9092 }
+    - { name: "port2", port: 9093 }
 {% endfor %}
 
 {% for peer in peers %}
@@ -106,49 +101,43 @@ spec:
       hostPath:
         path: {{ fabricworkdir }}/run/keyfiles/{{ peer.org }}/peers/{{ peer.name }}.{{ peer.org }}
   containers:
+{% if fabric.peer_db == 'CouchDB' %}
+    - name: couchdb-{{ peer.name }}
+      image: hyperledger/fabric-couchdb:{{ thetag }}
+      imagePullPolicy: IfNotPresent
+      securityContext:
+        privileged: true
+{% endif %}
     - name: {{ peer.name }}
       image: hyperledger/fabric-peer:{{ thetag }}
       imagePullPolicy: IfNotPresent
       securityContext:
         privileged: true
       env:
-        - name: CORE_VM_ENDPOINT
-          value: "unix:///host/var/run/docker.sock"
-        - name: CORE_LOGGING_LEVEL
-          value: "DEBUG"
-        - name: CORE_PEER_TLS_ENABLED
-          value: "true"
-        - name: CORE_PEER_ENDORSER_ENABLED
-          value: "true"
-        - name: CORE_PEER_GOSSIP_USELEADERELECTION
-          value: "{{ allpeers|selectattr('org','equalto',peer.org)|list|selectattr('role','equalto','leader')|list|length|int==0 }}"
-        - name: CORE_PEER_GOSSIP_ORGLEADER
-          value: "{{ (peer.role == "leader") | ternary('true','false') }}"
-        - name: CORE_PEER_PROFILE_ENABLED
-          value: "true"
-        - name: CORE_PEER_TLS_CERT_FILE
-          value: "/etc/hyperledger/fabric/tls/server.crt"
-        - name: CORE_PEER_TLS_KEY_FILE
-          value: "/etc/hyperledger/fabric/tls/server.key"
-        - name: CORE_PEER_TLS_ROOTCERT_FILE
-          value: "/etc/hyperledger/fabric/tls/ca.crt"
-        - name: CORE_PEER_ID
-          value: "{{ peer.name }}"
-        - name: CORE_PEER_ADDRESS
-          value: "{{ peer.name }}:7051"
-        - name: CORE_PEER_GOSSIP_EXTERNALENDPOINT
-          value: "{{ peer.name }}:7051"
-        - name: CORE_PEER_LOCALMSPID
-          value: "{{ peer.org }}"
-        - name: CORE_PEER_MSPCONFIGPATH
-          value: "/etc/hyperledger/fabric/msp"
+        - { name: "CORE_VM_ENDPOINT", value: "unix:///host/var/run/docker.sock" }
+        - { name: "CORE_LOGGING_LEVEL", value: "DEBUG" }
+        - { name: "CORE_PEER_TLS_ENABLED", value: "true" }
+        - { name: "CORE_PEER_ENDORSER_ENABLED", value: "true" }
+        - { name: "CORE_PEER_GOSSIP_USELEADERELECTION",
+            value: "{{ allpeers|selectattr('org','equalto',peer.org)|list|selectattr('role','equalto','leader')|list|length|int==0 }}" }
+        - { name: "CORE_PEER_GOSSIP_ORGLEADER", value: "{{ (peer.role == "leader") | ternary('true','false') }}" }
+        - { name: "CORE_PEER_PROFILE_ENABLED", value: "true" }
+        - { name: "CORE_PEER_TLS_CERT_FILE", value: "/etc/hyperledger/fabric/tls/server.crt" }
+        - { name: "CORE_PEER_TLS_KEY_FILE", value: "/etc/hyperledger/fabric/tls/server.key" }
+        - { name: "CORE_PEER_TLS_ROOTCERT_FILE", value: "/etc/hyperledger/fabric/tls/ca.crt" }
+        - { name: "CORE_PEER_ID", value: "{{ peer.name }}" }
+        - { name: "CORE_PEER_ADDRESS", value: "{{ peer.name }}:7051" }
+        - { name: "CORE_PEER_GOSSIP_EXTERNALENDPOINT", value: "{{ peer.name }}:7051" }
+        - { name: "CORE_PEER_LOCALMSPID", value: "{{ peer.org }}" }
+        - { name: "CORE_PEER_MSPCONFIGPATH", value: "/etc/hyperledger/fabric/msp" }
+{% if fabric.peer_db == 'CouchDB' %}
+        - { name: "CORE_LEDGER_STATE_STATEDATABASE", value: "CouchDB" }
+        - { name: "CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS", value: "localhost:5984" }
+{% endif %}
       volumeMounts:
-        - mountPath: /host/var/run
-          name: varrun
-        - mountPath: /etc/hyperledger/fabric
-          name: peerorg
-        - mountPath: /etc/hyperledger/allorgs
-          name: keyfiles
+        - { mountPath: "/host/var/run", name: "varrun" }
+        - { mountPath: "/etc/hyperledger/fabric", name: "peerorg" }
+        - { mountPath: "/etc/hyperledger/allorgs", name: "keyfiles" }
       command: ["peer"]
       args: ["node", "start"]
 ---
@@ -189,39 +178,23 @@ spec:
       image: hyperledger/fabric-orderer:{{ thetag }}
       imagePullPolicy: IfNotPresent
       env:
-        - name: ORDERER_GENERAL_LOGLEVEL
-          value: "debug"
-        - name: ORDERER_GENERAL_LISTENADDRESS
-          value: "0.0.0.0"
-        - name: ORDERER_GENERAL_GENESISMETHOD
-          value: "file"
-        - name: ORDERER_GENERAL_GENESISFILE
-          value: "/var/hyperledger/allorgs/genesis.block"
-        - name: ORDERER_GENERAL_LOCALMSPID
-          value: "{{ orderer.org }}"
-        - name: ORDERER_GENERAL_LOCALMSPDIR
-          value: "/var/hyperledger/orderer/msp"
-        - name: ORDERER_GENERAL_TLS_ENABLED
-          value: "true"
-        - name: ORDERER_GENERAL_TLS_CLIENTAUTHENABLED
-          value: "false"
-        - name: ORDERER_GENERAL_TLS_PRIVATEKEY
-          value: "/var/hyperledger/orderer/tls/server.key"
-        - name: ORDERER_GENERAL_TLS_CERTIFICATE
-          value: "/var/hyperledger/orderer/tls/server.crt"
-        - name: ORDERER_GENERAL_TLS_ROOTCAS
-          value: "[/var/hyperledger/orderer/tls/ca.crt]"
-        - name: ORDERER_KAFKA_RETRY_SHORTINTERVAL
-          value: "1s"
-        - name: ORDERER_KAFKA_RETRY_SHORTTOTAL
-          value: "30s"
-        - name: ORDERER_KAFKA_VERBOSE
-          value: "true"
+        - { name: "ORDERER_GENERAL_LOGLEVEL", value: "debug" }
+        - { name: "ORDERER_GENERAL_LISTENADDRESS", value: "0.0.0.0" }
+        - { name: "ORDERER_GENERAL_GENESISMETHOD", value: "file" }
+        - { name: "ORDERER_GENERAL_GENESISFILE", value: "/var/hyperledger/allorgs/genesis.block" }
+        - { name: "ORDERER_GENERAL_LOCALMSPID", value: "{{ orderer.org }}" }
+        - { name: "ORDERER_GENERAL_LOCALMSPDIR", value: "/var/hyperledger/orderer/msp" }
+        - { name: "ORDERER_GENERAL_TLS_ENABLED", value: "true" }
+        - { name: "ORDERER_GENERAL_TLS_CLIENTAUTHENABLED", value: "false" }
+        - { name: "ORDERER_GENERAL_TLS_PRIVATEKEY", value: "/var/hyperledger/orderer/tls/server.key" }
+        - { name: "ORDERER_GENERAL_TLS_CERTIFICATE", value: "/var/hyperledger/orderer/tls/server.crt" }
+        - { name: "ORDERER_GENERAL_TLS_ROOTCAS", value: "[/var/hyperledger/orderer/tls/ca.crt]" }
+        - { name: "ORDERER_KAFKA_RETRY_SHORTINTERVAL", value: "1s" }
+        - { name: "ORDERER_KAFKA_RETRY_SHORTTOTAL", value: "30s" }
+        - { name: "ORDERER_KAFKA_VERBOSE", value: "true" }
       volumeMounts:
-        - mountPath: /var/hyperledger/allorgs
-          name: keyfiles
-        - mountPath: /var/hyperledger/orderer
-          name: ordererorg
+        - { mountPath: "/var/hyperledger/allorgs", name: "keyfiles" }
+        - { mountPath: "/var/hyperledger/orderer", name: "ordererorg" }
       command: ["orderer"]
 ---
 kind: Service
