@@ -21,6 +21,8 @@ PeerOrgs:
 
   - Name: {{ item.org }}
     Domain: {{ item.org }}
+    Users:
+      Count: 2
     Specs: {%      endif %}  
       - Hostname: {{ item.name }}{% set lastOrg = item.org %}
 {%   endfor %}
