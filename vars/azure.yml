@@ -22,8 +22,8 @@ cluster: {
   vm_size: "Standard_D1",
 
 
-  target_os: "UbuntuServer",
-  image_name: "ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-*",  
+#  target_os: "UbuntuServer",
+#  image_name: "ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-*",  
   image_id: "ami-d15a75c7",
   flavor_name: " ",  
   ssh_user: "ubuntu",

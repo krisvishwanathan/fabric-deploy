@@ -1,7 +1,7 @@
 ---
 - name: Setup env specific variables
   set_fact:
-    tp_path: "{{ playbook_dir }}/../cloud_azure/provision/templates/{{ cluster.target_os }}.j2"
+   # tp_path: "{{ playbook_dir }}/../cloud_azure/provision/templates/{{ cluster.target_os }}.j2"
     ip_pos: "{{ inventory_hostname | replace(cluster.name_prefix, '') }}"
     azure_ad_user: "{{ auth.username }}"
     azure_ad_pwd: "{{ auth.password }}"
