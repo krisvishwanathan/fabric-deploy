@@ -15,4 +15,5 @@
     name: "{{ res_grp }}"
     location: "{{ region }}"
     state: absent
+    force: yes
   
