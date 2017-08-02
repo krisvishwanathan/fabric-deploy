@@ -1,7 +1,6 @@
 ---
 - name: Setup env specific variables
   set_fact:
-   # tp_path: "{{ playbook_dir }}/../cloud_azure/provision/templates/{{ cluster.target_os }}.j2"
     ip_pos: "{{ inventory_hostname | replace(cluster.name_prefix, '') }}"
     azure_ad_user: "{{ auth.username }}"
     azure_ad_pwd: "{{ auth.password }}"
@@ -47,16 +46,11 @@
     resource_group: '{{ res_grp }}'
     location: "{{ region }}"
     name: "{{ inventory_hostname }}"
-    #"{{ cluster.name_prefix }}{{ item }}"
-    #'{{ res_grp }}001'
     vm_size: Standard_D1
     virtual_network_name: '{{ res_grp }}-vnet'
     subnet_name: '{{ res_grp }}-subnet'
     network_interface_names: 'nic-{{ inventory_hostname }}'
     admin_username: ubuntu
-    #storage_account: '{{ res_grp }}st'
-    #storage_container: '{{ res_grp }}-fabric-test'
-    #storage_blob: '{{ res_grp }}-fabric-test.vhd'
     ssh_password_enabled: False
     ssh_public_keys:
     - path: "/home/ubuntu/.ssh/authorized_keys"
@@ -73,8 +67,3 @@
     inter_name: "{{ azvm.ansible_facts.azure_vm.name  }}"
     public_ip: "{{ azvm.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }}"
     private_ip: "{{ azvm.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.privateIPAddress }}"
-
-  
-
-#- debug: 
- #   msg: "VM Creation Results: vm_create_result"
