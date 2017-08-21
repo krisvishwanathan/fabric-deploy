@@ -6,7 +6,8 @@ auth: {
 
   # if Authenticating with Azure using Active Directory 
   username: "icloudnow@seemsysyahoo.onmicrosoft.com",  # this corresponds to ad_user ansible variable
-  password: "{{ password | default(lookup('env', 'AZURE_PASSWORD')) }}", #ad_pwd
+  password: "King197$",
+  #password: "{{ password | default(lookup('env', 'AZURE_PASSWORD')) }}", #ad_pwd
    
   #if Authenitcating using Azure Service Principal
   azure_client_id: " ",
@@ -58,15 +59,15 @@ cluster: {
 
   # fabric network node names expect to be using a clear pattern, this defines
   # the prefix for the node names. 
-  name_prefix: "fabric",
-  domain: "fabricnet",
+  name_prefix: "icloudnow",
+  domain: "icloudnownet",
 
   # stack_size determines how many virtual or physical machines we will have
   # each machine will be named ${name_prefix}001 to ${name_prefix}${stack_size} 
   stack_size: 3,
 
-  etcdnodes: ["fabric001", "fabric002", "fabric003"],
-  builders: ["fabric001"],
+  etcdnodes: ["icloudnow001", "icloudnow002", "icloudnow003"],
+  builders: ["icloudnow001"],
   
   flannel_repo: "https://github.com/coreos/flannel/releases/download/v0.7.1/flannel-v0.7.1-linux-amd64.tar.gz",
   etcd_repo: "https://github.com/coreos/etcd/releases/download/v3.2.0/etcd-v3.2.0-linux-amd64.tar.gz",

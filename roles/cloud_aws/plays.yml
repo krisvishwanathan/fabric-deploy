@@ -1,40 +1,73 @@
 ---
-- name: Prepare to run the workload
-  hosts: cloud
+- name: Init Cloud environment global variables
+  hosts: localhost
   connection: local
   vars_files:
-    - "./../../vars/{{ env }}.yml"
+    - "./../../vars/{{ cloud }}.yml"
+#  tasks:
+#    - include: "prepare/tasks/{{ mode }}.yml"
+  tags: "Init-Cloud"
+
+- name: Authenticate to the cloud
+  hosts: localhost
+  connection: local
+  strategy: free
+  vars_files:
+    - "./../../vars/{{ cloud }}.yml"
+    - "./../../workspace/{{ proj }}/credvars.yml"
+  tasks:
+    - include: "creds/tasks/{{ mode }}.yml"
+  tags: "creds"
+
+- name: Cloud Topology definition
+  hosts: localhost
+  connection: local
+  strategy: free
+  vars_files:
+    - "./../../workspace/{{ proj }}/topologyvars.yml"
+    - "./../../vars/{{ cloud }}.yml"
+  tasks:
+    - include: "topology/tasks/{{ mode }}.yml"
+  tags: "topology"
+
+- name: Prepare the environment
+  hosts: localhost
+  connection: local
+  vars_files:
+    - "./../../workspace/{{ proj }}/preparevars.yml"
+    - "./../../vars/{{ cloud }}.yml"
   tasks:
     - include: "prepare/tasks/{{ mode }}.yml"
   tags: "prepare"
 
-- name: provision servers
+- name: Provision the server
   hosts: prohosts
   connection: local
-  strategy: free
   vars_files:
-    - "{{ playbook_dir }}/../../vars/{{ env }}.yml"
+    - "./../../workspace/{{ proj }}/provisionvars.yml"
+    - "./../../vars/{{ cloud }}.yml"
   tasks:
     - include: "provision/tasks/{{ mode }}.yml"
-  tags: "provision"
+  tags: "prepare"
 
-- name: Post provision process
-  hosts: cloud
+- name: Post Provision server prereqs
+  hosts: localhost
   connection: local
   vars_files:
-    - "{{ playbook_dir }}/../../vars/{{ env }}.yml"
+    - "./../../workspace/{{ proj }}/postprovvars.yml"
+    - "./../../vars/{{ cloud }}.yml"
   tasks:
     - include: "postprovision/tasks/{{ mode }}.yml"
-  tags: "postprovision"
+  tags: "prepare"
 
-- name: change /etc/hosts files so that each node knows other nodes
-  hosts: allnodes
-  strategy: free
-  user: "{{ cluster.ssh_user }}"
-  become: true
-  become_user: root
+- name: Deployment of software assets
+  hosts: localhost
+  connection: local
   vars_files:
-    - "{{ playbook_dir }}/../../vars/{{ env }}.yml"
+    - "./../../workspace/{{ proj }}/deployvars.yml"
+    - "./../../vars/{{ cloud }}.yml"
   tasks:
-    - include: "../cloud_os/namenode/tasks/{{ mode }}.yml"
-  tags: "namenode"
+    - include: "deployment/tasks/{{ mode }}.yml"
+  tags: "prepare"
+
+

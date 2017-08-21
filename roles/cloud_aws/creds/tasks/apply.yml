@@ -1,0 +1,21 @@
+---
+- name: Setup env specific variables
+  set_fact:
+    aws_usr_key: "{{ auth.username }}"
+    aws_sec_key: "{{ auth.password }}"
+    region: "{{ cluster.region_name | default('us-east-1') }}"
+
+- name: Authenticate to AWS
+  ec2_ami_find:
+    region: "{{ cluster.region_name }}"
+    name: "{{ cluster.image_name }}"
+    aws_access_key: "{{ aws_usr_key }}"
+    aws_secret_key: "{{ aws_sec_key }}"
+    virtualization_type: hvm
+    is_public: yes
+    sort: name
+    sort_order: descending
+    sort_end: 4
+    no_result_action: fail
+  register: found_amis
+    

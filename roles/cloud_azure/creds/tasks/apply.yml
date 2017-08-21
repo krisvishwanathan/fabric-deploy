@@ -7,4 +7,15 @@
     azure_sub_id: "{{ auth.subscription_id }}"
     region: "{{ cluster.region_name | default('eastus') }}"
     res_grp: "{{ cluster.resource_group }}"
-    
+
+- name: Authenticate to Azure
+  azure_rm_virtualmachineimage_facts:
+    ad_user: "{{ azure_ad_user }}"
+    password: "{{ azure_ad_pwd }}"
+    subscription_id: "{{ azure_sub_id }}"
+    location: eastus
+    offer: UbuntuServer
+    publisher: Canonical
+    sku: '16.04.0-LTS'
+    version: latest
+

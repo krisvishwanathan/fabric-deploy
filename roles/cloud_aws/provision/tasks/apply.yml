@@ -1,7 +1,7 @@
 ---
 - name: Setup env specific variables
   set_fact:
-    tp_path: "{{ playbook_dir }}/../cloud_aws/provision/templates/{{ cluster.target_os }}.j2"
+ #   tp_path: "{{ playbook_dir }}/../cloud_aws/provision/templates/{{ cluster.target_os }}.j2"
     ip_pos: "{{ inventory_hostname | replace(cluster.name_prefix, '') }}"
     aws_usr_key: "{{ auth.username }}"
     aws_sec_key: "{{ auth.password }}"
@@ -22,7 +22,7 @@
     image: "{{ cluster.image_id }}"
     instance_type: "{{ cluster.flavor_name }}"
     state: present
-    user_data: "{{ lookup('template', tp_path) }}"
+#    user_data: "{{ lookup('template', tp_path) }}"
     vpc_subnet_id: "{{ subnet_id }}"
     instance_tags:
       Name: "{{ inventory_hostname }}"

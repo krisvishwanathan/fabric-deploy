@@ -1,0 +1,16 @@
+
+
+[sensu-server]
+ sensuserver ansible_host=127.0.0.1
+
+[sensu-client]
+ sensuclient[0:2] ansible_host=127.0.0.1
+
+[sensu-server:vars]
+ssh-key-pub=keyfiles/id_rsa
+tag=sensu
+
+[sensu-client:vars]
+ssh-key-pub=keyfiles/id_rsa
+db-name=xyz
+tag=sensu

@@ -1,2 +1,47 @@
 ---
-- include: ../../../cloud_os/postprovision/tasks/apply.yml
+- name: Setup env specific variables
+  set_fact:
+#    tp_path: "{{ playbook_dir }}/../cloud_aws/provision/templates/{{ cluster.target_os }}.j2"
+    ip_pos: "{{ inventory_hostname | replace(cluster.name_prefix, '') }}"
+    aws_usr_key: "{{ auth.username }}"
+    aws_sec_key: "{{ auth.password }}"
+    region: "{{ cluster.region_name | default('us-east-1') }}"
+    
+- name: Display all variables/facts known for a host
+  debug:
+    msg: "{{ hostvars }}"
+  with_items:
+   - "{{ groups.all }}"
+
+#- name: Creating output group names for topology
+ # lineinfile:
+ #   dest: ../../workspace/{{proj}}/run/outputhosts
+ #   line: "{{ hostvars[item].ansible_host }} {{ hostvars[item].inventory_hostname }} {{ hostvars[item].inventory_hostname_short }} {{ hostvars[item].group_names[0] }}"
+  #  state: present
+  #with_items: "{{ groups.all }}" 
+
+#- name: Add the node to host group named allnodes
+#  add_host:
+#    name: "{{ hostvars[item][cluster.node_ip] }}"
+#    private_ip: "{{ hostvars[item].private_ip }}"
+#    public_ip: "{{ hostvars[item].public_ip }}" 
+#    inter_name: "{{ item }}"
+#    groups: "{{ hostvars[item].group_names[0] }}"
+#  with_items:
+#    - "{{ groups['prohosts'] }}"
+
+# "group='{{ hostvars[item].group_names[0] }}'" 
+#      "inter_name='{{ hostvars[item].inter_name }}'"
+#  "{{ hostvars[item].public_ip }}"
+- name: Add all the hosts to the file
+  lineinfile:
+    dest: ../../workspace/{{proj}}/run/outputhosts
+    create: yes
+    insertafter: EOF
+    line: >-
+        {{ hostvars[item].public_ip }} 
+        {{ item }}
+        inter_name='{{ hostvars[item].inter_name }}
+        group={{ hostvars[item].group_names[0] }}
+  with_items:
+    - "{{ groups.all }}"

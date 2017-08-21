@@ -1,0 +1,13 @@
+54.165.182.86  webserver1 inter_name='webserver1 group=prohosts
+54.89.246.79  database0 inter_name='database0 group=db
+54.86.45.15  database1 inter_name='database1 group=db
+54.173.178.189  cloud inter_name='cloud group=prohosts
+54.165.223.222  webserver1 inter_name='webserver1 group=prohosts
+54.162.114.210  database0 inter_name='database0 group=db
+52.87.223.125  database1 inter_name='database1 group=db
+127.0.0.1 webserver1 webserver1
+127.0.0.1 database0 database0
+127.0.0.1 database1 database1
+34.203.206.62  webserver1 inter_name='webserver1 group=prohosts
+54.227.212.35  database0 inter_name='database0 group=db
+174.129.118.191  database1 inter_name='database1 group=db

@@ -24,7 +24,7 @@
     state: present
   register: azip
 
-- name: Create fabric nic
+- name: Create nic
   azure_rm_networkinterface:
     ad_user: "{{ azure_ad_user }}"
     password: "{{ azure_ad_pwd }}"
@@ -38,7 +38,7 @@
     state: present
   register: nic_result
 
-- name: create fabric VM
+- name: create VM
   azure_rm_virtualmachine:
     ad_user: "{{ azure_ad_user }}"
     password: "{{ azure_ad_pwd }}"

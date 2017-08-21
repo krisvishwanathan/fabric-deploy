@@ -7,21 +7,6 @@
     region: "{{ cluster.region_name | default('eastus') }}"
     res_grp: "{{ cluster.resource_group }}"
 
-- name: Retrieve azure specific image details
-  azure_rm_virtualmachineimage_facts :
-    ad_user: "{{ azure_ad_user }}"
-    password: "{{ azure_ad_pwd }}"
-    subscription_id: "{{ azure_sub_id }}"
-    location: "{{ region }}"
-    offer: UbuntuServer
-    publisher: Canonical
-    sku: '16.04.0-LTS'
-    version: latest
-  register: found_images
-
-
-- name: Print azure image results
-  debug: var=found_images
 
 - name: Create azure resource group
   azure_rm_resourcegroup:
@@ -86,8 +71,8 @@
     name: "{{ cluster.name_prefix }}{{ item }}"
     ansible_host: "127.0.0.1"
     groups: prohosts
-  with_sequence: count={{ cluster.stack_size }} format=%03x
-- name: Scan the public key for master and added it to known hosts
-  debug: "arggg  {{ item }}  "
-  with_items: "{{ groups['prohosts'] }}"
+  with_items: "{{ groups.all }}" 
+#- name: Scan the public key for master and added it to known hosts
+#  debug: "arggg  {{ item }}  "
+#  with_items: "{{ groups['prohosts'] }}"
 

@@ -3,30 +3,31 @@
 auth: {
   auth_url: "",
   # This should be your AWS Access Key ID
-  username: "AKIAJTDI64MBEL3WSYTQ",
+  username: "AKIAICD4DZBUZF3DAPCQ",
   # This should be your AWS Secret Access Key
   # can be passed as part of cmd line when running the playbook
-  password: "{{ password | default(lookup('env', 'AWS_SECRET_KEY')) }}"
+  password: "P340QS7Q1uQruHwkG9ECh8BJ60psboRaodOxNeUA"
+  # password: "{{ password | default(lookup('env', 'AWS_SECRET_KEY')) }}"
 }
 
 # These variable defines AWS cloud provision attributes
 cluster: {
   region_name: "us-east-1",     #TODO  Dynamic fetch
   availability_zone: "", #TODO  Dynamic fetch based on region
-  security_group: "Fabric",
+  security_group: "iclodunow",
 
   target_os: "ubuntu",
   image_name: "ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-*",  
   image_id: "ami-d15a75c7",
-  flavor_name: "t2.medium",  # "m2.medium" is big enough for Fabric
+  flavor_name: "t2.micro",  # "m2.medium" is big enough for Fabric
   ssh_user: "ubuntu",
   validate_certs: True,
   private_net_name: "demonet",
   
   
-  public_key_file: "/home/ubuntu/.ssh/fd.pub",
-  private_key_file: "/home/ubuntu/.ssh/fd",
-  ssh_key_name: "fabric",
+  public_key_file: "/home/ubuntu/.ssh/id_rsa.pub",
+  private_key_file: "/home/ubuntu/.ssh/id_rsa",
+  ssh_key_name: "icloudnow",
   # This variable indicate what IP should be used, only valid values are
   # private_ip or public_ip
   node_ip: "public_ip",
@@ -51,15 +52,15 @@ cluster: {
 
   # fabric network node names expect to be using a clear pattern, this defines
   # the prefix for the node names. 
-  name_prefix: "fabric",
-  domain: "fabricnet",
+  name_prefix: "ICN",
+  domain: "icloudnownet",
 
   # stack_size determines how many virtual or physical machines we will have
   # each machine will be named ${name_prefix}001 to ${name_prefix}${stack_size} 
   stack_size: 3,
 
-  etcdnodes: ["fabric001", "fabric002", "fabric003"],
-  builders: ["fabric001"],
+  etcdnodes: ["icloudnow001", "icloudnow002", "icloudnow003"],
+  builders: ["icloudnow001"],
   
   flannel_repo: "https://github.com/coreos/flannel/releases/download/v0.7.1/flannel-v0.7.1-linux-amd64.tar.gz",
   etcd_repo: "https://github.com/coreos/etcd/releases/download/v3.2.0/etcd-v3.2.0-linux-amd64.tar.gz",

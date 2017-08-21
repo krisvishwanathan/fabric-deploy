@@ -1,0 +1,15 @@
+
+
+[webservers]
+ webserver1 ansible_host=127.0.0.1
+
+
+[db]
+ database[0:1] ansible_host=127.0.0.1
+
+[webservers:vars]
+ssh-key-pub=id_rsa
+
+[db:vars]
+ssh-key-pub=keyfiles/id_rsa
+db-name=xyz
